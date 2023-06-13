@@ -20,8 +20,8 @@ pipeline {
         sh 'mvn -B -DskipTests clean compile'
         echo 'Running sonar in build step ....'
         sonarSummaries()
-        echo 'Running devops change in build step ....'
-        snDevOpsChange()
+        //echo 'Running devops change in build step ....'
+        //snDevOpsChange()
       }
     }
     stage('Test') {
