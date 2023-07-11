@@ -18,8 +18,8 @@ pipeline {
     stage('Build') {
       steps {
         sh 'mvn -B -DskipTests clean compile'
-        //echo 'Running devops change in build step ....'
-        //snDevOpsChange()
+        echo 'Running devops change in build step ....'
+        snDevOpsChange()
         echo 'Running sonar in build step ....'
         sonarSummaries()
       }
