@@ -18,10 +18,10 @@ pipeline {
     stage('Build') {
       steps {
         sh 'mvn -B -DskipTests clean compile'
-        //echo 'Running sonar in build step ....'
-        //sonarSummaries()
         echo 'Running devops change in build step ....'
         snDevOpsChange()
+        //echo 'Running sonar in build step ....'
+        //sonarSummaries()
       }
     }
     stage('Test') {
@@ -44,7 +44,7 @@ pipeline {
         
         snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
         
-        //snDevOpsChange(ignoreErrors:false)
+        snDevOpsChange(ignoreErrors:false)
       }
     }
   }
@@ -65,4 +65,3 @@ def sonarSummaries() {
     }
   }
 }
-
