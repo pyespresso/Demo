@@ -18,8 +18,9 @@ pipeline {
     stage('Build') {
       steps {
         sh 'mvn -B -DskipTests clean compile'
-        echo 'Running sonar in build step ....'
-        sonarSummaries()
+        echo 'Running veracode in build step ....'
+        //sonarSummaries()
+        snDevOpsSecurityResult securityResultAttributes: "{'scanner': 'Veracode','applicationName': 'PetStoreAPI-Github', 'securityToolId' : 'da1671804724b110c2f3e35b416d43d7'}"
         echo 'Running devops change in build step ....'
         snDevOpsChange()
       }
