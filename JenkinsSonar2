@@ -20,8 +20,6 @@ pipeline {
         sh 'mvn -B -DskipTests clean compile'
         echo 'Running sonar in build step ....'
         sonarSummaries()
-        echo 'Running devops change in build step ....'
-        snDevOpsChange()
       }
     }
     stage('Test') {
@@ -38,13 +36,11 @@ pipeline {
       steps {
         echo 'Deploying the change....'
         
-        //sonarSummaries()
+        //snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
         
-        snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
+        //snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
         
-        snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-        
-        snDevOpsChange(ignoreErrors:false)
+        snDevOpsChange configurationName: 'ankur_instance'
       }
     }
   }
