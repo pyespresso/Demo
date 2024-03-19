@@ -51,17 +51,18 @@ pipeline {
 }
 
 def sonarSummaries() {
-  
-  //withSonarQubeEnv('SonarCloud') {
-  //  sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner-cloud.properties'
-  //}
-
-  withSonarQubeEnv('SonarCloud') {
-    if(fileExists("sonar-project.properties")) {
-      sh '${SCANNER_HOME}/bin/sonar-scanner'
-    } else {
-      sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
-      //sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/sonar-scanner.properties'
-    }
-  }
+	withSonarQubeEnv('sonarcloud.io'){
+	   if(fileExists("sonar-project.properties")) {
+			sh '${SCANNER_HOME}/bin/sonar-scanner'
+		} else {
+			sh 'mvn clean verify sonar:sonar \
+			    -Dsonar.login=71c70683d55030fe9fe461afdf873d7b987008db \
+			    -Dsonar.host.url=https://sonarcloud.io \
+			    -Dsonar.organization=pyespresso \
+			    -Dsonar.projectKey=pyespresso_Demo'
+		}
+	}
+	//timeout(time: 1, unit: 'MINUTES') {
+		//waitForQualityGate abortPipeline: false
+	//}
 }
