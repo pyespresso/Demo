@@ -17,7 +17,6 @@ pipeline {
   stages {
     stage('Build') {
       when {
-        echo 'Skipping sonar....'
         equals expected: 2, actual: 1
       }
       steps {
