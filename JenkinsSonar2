@@ -16,9 +16,6 @@ pipeline {
   }  
   stages {
     stage('Build') {
-      when {
-        equals expected: 2, actual: 1
-      }
       steps {
         echo 'Running sonar....'
         sh 'mvn -B -DskipTests clean compile'
@@ -27,6 +24,9 @@ pipeline {
       }
     }
     stage('Test') {
+      when {
+        equals expected: 2, actual: 1
+      }
       steps {
         echo 'Running tests....'
         sh 'mvn test'
