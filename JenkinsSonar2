@@ -26,31 +26,6 @@ pipeline {
         sonarSummaries()
       }
     }
-    stage('Test') {
-      when {
-        equals expected: 2, actual: 1
-      }
-      steps {
-        echo 'Running tests....'
-        sh 'mvn test'
-      }
-      post {
-        always {
-          junit "**/target/surefire-reports/*.xml"
-        }
-      }
-    }
-    stage('Deploy Stage') {
-      steps {
-        echo 'Deploying the change....'
-        
-        //snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
-        
-        //snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-        
-        snDevOpsChange configurationName: 'ankur_instance'
-      }
-    }
   }
 }
 
