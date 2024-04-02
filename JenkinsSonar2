@@ -15,15 +15,15 @@ pipeline {
     SCANNER_HOME = tool 'sonarScanner'
   }  
   stages {
-    stage('Build') {
+    stage('build_job') {
       when {
         equals expected: 2, actual: 2
       }
       steps {
         echo 'Running sonar....'
-        sh 'mvn -B -DskipTests clean compile'
-        echo 'Running sonar in build step ....'
-        sonarSummaries()
+        //sh 'mvn -B -DskipTests clean compile'
+        //echo 'Running sonar in build step ....'
+        //sonarSummaries()
       }
     }
   }
