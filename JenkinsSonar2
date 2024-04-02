@@ -17,7 +17,7 @@ pipeline {
   stages {
     stage('Build') {
       when {
-        equals expected: 2, actual: 1
+        equals expected: 2, actual: 2
       }
       steps {
         echo 'Running sonar....'
