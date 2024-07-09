@@ -1,94 +1,53 @@
 def artifactname = "devops-snow-build-app.jar"
 def repoName = "JenkinsDevOpsProject"
-def pipelineName = "SunilPipelines/Sunil-Scripted-Pipeline-Sonar"
 def semanticVersion = "${env.BUILD_NUMBER}.0.0"
-def packageName = "devops-snow-build-pkg_${env.BUILD_NUMBER}"
 def version = "${env.BUILD_NUMBER}.0"
 def pkgName = "devops-snow-build-pkg_${env.BUILD_NUMBER}"
-def changeRequestId = "testId"
-def artifactVersion = "2.${env.BUILD_NUMBER}"
-def artifactSemVersion = "${artifactVersion}.0"
-
-
-pipeline {
-  agent any
-  tools {
-       maven 'Maven'
-   }
-   environment {
-	 SCANNER_HOME = tool 'sonarScanner'
-	}  
-  stages {
-       stage('Build &1') {
-           steps {
-              
-              sh 'mvn -B -DskipTests clean compile'
-
-           }
-       }
-       stage('Test') {
-           steps {
-	      //sonarSummaries()
-              snDevOpsStep()
-	      sh 'mvn test'
-           }
-           post {
-             always {
-                junit "**/target/surefire-reports/*.xml"
-             }
-           }
-       }
-      stage('Deploy') {
-                 steps {
-		 
-                   echo 'Deploying the change....'
-		  // snDevOpsSecurityResult securityResultAttributes: "{'applicationName': 'RiyaJenkins', 'buildVersion': ''}", securityToolId: "8fed51e8c347a550946e706dc0013164" // toolId: "8075de6f87e569100aaeea483cbb35c7"
-                   snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
-           	//   snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-		  // snDevOpsChange(ignoreErrors:false)
-		  // snDevOpsChange changeRequestDetails: '{ "attributes": { "short_description": "Testing","category": "DevOps", "chg_model": "e55d0bfec343101035ae3f52c1d3ae49", "type": "standard", "standard_change_template": "508e02ec47410200e90d87e8dee49058"}}'//standard
-		    // snDevOpsChange changeRequestDetails: '{ "attributes": { "chg_model": "adffaa9e4370211072b7f6be5bb8f2ed", "type": "standard", "standard_change_template": "508e02ec47410200e90d87e8dee49058"}}'	
-		     //snDevOpsChange changeRequestDetails: '{ "attributes": { "type": "standard", "standard_change_template": "508e02ec47410200e90d87e8dee49058"}}'
-		      // snDevOpsChange()
-		      snDevOpsChange changeRequestDetails: '{ "attributes": { "type": "normal"}}'
-		     script{
-                    changeNumber = snDevOpsGetChangeNumber()
-                    echo '>> Deploy Stage -----'
-                    sh "echo ${changeNumber}"
-                  
-                  }
-		    
-		   
-                 }
-	}
-		 
-       stage('pre prod deploy') { 
-         steps {
-                    //snDevOpsStep()     
-                      echo "packageName - ${packageName}" 
-                       snDevOpsPackage(name: "${packageName}", artifactsPayload:"""{"artifacts": [{"name": "${artifactname}","version":"${artifactVersion}","semanticVersion": "${artifactSemVersion}","repositoryName": "${repoName}"}]}""")
-                    }
-            }
-		 
-      }
-	   
-     
-  }
+def changeRequestNumber = "null"
+def currStageName = "none"
  
-  
-     
-     
-  def sonarSummaries() {
- //  withSonarQubeEnv('SonarCloud') {
-    //   sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner-cloud.properties'
- //  }
-  withSonarQubeEnv('sonarQube_local'){
-      if(fileExists("sonar-project.properties")) {
-      	sh '${SCANNER_HOME}/bin/sonar-scanner'
-        } else {
-            sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
-   		  //sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/sonar-scanner.properties'
+pipeline {
+  	agent any
+  	tools {
+  		maven 'Maven'
+  	}
+   	environment {
+	 	SCANNER_HOME = tool 'sonarScanner' 
+	}  
+  	stages {
+       	stage('Build') { 
+           steps {
+              	echo 'Build Stage'
+           }
+       	}
+	stage('Deploy') {
+            steps {
+		script {
+                	echo 'Running deploy stage'
+			snDevOpsChange changeRequestDetails: '{ "attributes": {"chg_model": "adffaa9e4370211072b7f6be5bb8f2ed"}}', changeStepTimeOut: 18000, pollingInterval: 30, configurationName: 'ankur_instance'
+	      		stageName = "Deploy"
+			changeRequestNumber = snDevOpsGetChangeNumber(changeDetails: """{"stage_name":"${stageName}"}""", configurationName: 'ankur_instance')
+			echo "${changeRequestNumber}"
+					
+			snDevOpsUpdateChangeInfo(changeRequestDetails: 
+                        """{
+				"close_code": "successful",
+			    	"state": "3", 
+			    	"close_notes": "Deployment to PROD was failed test 123",
+                            	"short_description": "Short description updated to Test description in ${currStageName} Step by ${env.BUILD_NUMBER}",
+                            	"priority": "1",
+                            	"start_date": "2021-02-05 08:00:00",
+                            	"end_date": "2022-12-25 08:00:00",
+                            	"justification": "test justification",
+                            	"description": "test description",
+                            	"cab_required": true,
+                            	"comments": "This update for comments is from jenkins file",
+                            	"work_notes": "This update for work_notes is from jenkins file"
+                        }""", 
+                       	changeRequestNumber: """${changeRequestNumber}""", configurationName: 'ankur_instance')
+		}
+            }
+           
         }
-  }
-   
+    }
 }
