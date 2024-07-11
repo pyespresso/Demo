@@ -9,15 +9,15 @@ def currStageName = "none"
 pipeline {
   	agent any
   	tools {
-  		maven 'Maven'
+	    maven 'Maven'
   	}
    	environment {
-	 	SCANNER_HOME = tool 'sonarScanner' 
+	    SCANNER_HOME = tool 'sonarScanner' 
 	}  
   	stages {
        	stage('Build') { 
            steps {
-              	echo 'Build Stage'
+              echo 'Build Stage'
            }
        	}
 	stage('Deploy') {
