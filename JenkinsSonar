@@ -47,7 +47,6 @@ pipeline {
                        	changeRequestNumber: """${changeRequestNumber}""", configurationName: 'ankur_instance')
 		}
             }
-           
         }
     }
 }
