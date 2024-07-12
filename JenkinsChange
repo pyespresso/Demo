@@ -15,18 +15,18 @@ pipeline {
 	    SCANNER_HOME = tool 'sonarScanner' 
 	}  
   	stages {
-       	stage('Build') { 
-           steps {
-              echo 'Build Stage'
-           }
-       	}
-	      stage('Deploy') {
-            steps {
-		          script {
-                echo 'Running deploy stage'
-			          snDevOpsChange changeRequestDetails: '{ "attributes": {"chg_model": "adffaa9e4370211072b7f6be5bb8f2ed"}}', changeStepTimeOut: 18000, pollingInterval: 30, configurationName: 'ankur_instance'
-		          }
-            }
-        }
-    }
+	       	stage('Build') { 
+	           steps {
+	              echo 'Build Stage'
+	           }
+	       	}
+	      	stage('Deploy') {
+            	    steps {
+			script {
+                	     echo 'Running deploy stage'
+			     snDevOpsChange changeRequestDetails: '{ "attributes": {"chg_model": "adffaa9e4370211072b7f6be5bb8f2ed"}}', changeStepTimeOut: 18000, pollingInterval: 30, configurationName: 'ankur_instance'
+		        }
+            	    }
+        	}
+    	}
 }
