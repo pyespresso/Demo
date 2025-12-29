@@ -32,13 +32,14 @@ pipeline {
 }
 
 def sonarSummaries() {
-	withSonarQubeEnv('sonarcloud_ankur'){
+	withSonarQubeEnv('sonarcloud.io'){
 	   if(fileExists("sonar-project.properties")) {
 			sh '${SCANNER_HOME}/bin/sonar-scanner'
 		} else {
 			sh 'mvn clean verify sonar:sonar \
 			    -Dsonar.login=9dd84238ed5a713a346d120a10ae2fba960db7ce \
 			    -Dsonar.host.url=https://sonarcloud.io \
+			    -Dsonar.organization=awasthi1210 \
 			    -Dsonar.projectKey=awasthi1210_ServiceNow-Devops-Custom-Actions'
 		}
 	}
