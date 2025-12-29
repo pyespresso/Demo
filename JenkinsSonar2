@@ -16,12 +16,9 @@ pipeline {
   }  
   stages {
     stage('build_job') {
-      when {
-        equals expected: 2, actual: 2
-      }
       steps {
-        echo 'Running sonar....'
-        //sh 'mvn -B -DskipTests clean compile'
+        echo 'Running Build....'
+        sh 'mvn -B -DskipTests clean compile'
         //echo 'Running sonar in build step ....'
         //sonarSummaries()
       }
