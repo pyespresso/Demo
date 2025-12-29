@@ -23,8 +23,10 @@ pipeline {
     }
 
     stage('change') {
-        echo 'Running sonar in build step ....'
-        sonarSummaries()
+	    steps {
+            echo 'Running sonar in build step ....'
+            sonarSummaries()
+        }
     }
   }
 }
