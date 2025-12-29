@@ -17,11 +17,14 @@ pipeline {
   stages {
     stage('build_job') {
       steps {
-        echo 'Running sonar....'
+        echo 'Running build step....'
         sh 'mvn -B -DskipTests clean compile'
-        //echo 'Running sonar in build step ....'
-        //sonarSummaries()
       }
+    }
+
+    stage('change') {
+        echo 'Running sonar in build step ....'
+        sonarSummaries()
     }
   }
 }
@@ -32,13 +35,9 @@ def sonarSummaries() {
 			sh '${SCANNER_HOME}/bin/sonar-scanner'
 		} else {
 			sh 'mvn clean verify sonar:sonar \
-			    -Dsonar.login=71c70683d55030fe9fe461afdf873d7b987008db \
+			    -Dsonar.login=9dd84238ed5a713a346d120a10ae2fba960db7ce \
 			    -Dsonar.host.url=https://sonarcloud.io \
-			    -Dsonar.organization=pyespresso \
-			    -Dsonar.projectKey=pyespresso_Demo'
+			    -Dsonar.projectKey=awasthi1210_ServiceNow-Devops-Custom-Actions'
 		}
 	}
-	//timeout(time: 1, unit: 'MINUTES') {
-	       //waitForQualityGate abortPipeline: false
-	//}
 }
